@@ -1,0 +1,30 @@
+jobs:
+  build_and_push:
+  on:
+    push:
+      branches:
+        - main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build backend image
+        run: |
+          docker build ./api -t dennis4057/devops-qr-code-backend:latest
+      
+      - name: Build frontend image
+        run: |
+          docker build ./front-end-nextjs -t dennis4057/devops-qr-code-frontend:latest
+      
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_HUB_ACTIONS }}" | docker login -u dennis4057 --password-stdin
+      
+      - name: Push backend image to Docker Hub
+        run: |
+          docker push dennis4057/devops-qr-code-backend:latest
+      
+      - name: Push frontend image to Docker Hub
+        run: |
+          docker push dennis4057/devops-qr-code-frontend:latest
